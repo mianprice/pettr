@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Pettr Mobile Client</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="bootstrap.min.css" />
+	<script src="jquery-1.11.1.min.js"></script>
+	<script src="bootstrap.min.js"></script>
+	<script src="handlebars-v3.0.0.js"></script>
+	<script src="pettr.js"></script>
+</head>
+<body class="container" style="padding-top:70px, padding-bottom:70px">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="row">
+				<button type="button" class="btn btn-default navbar-btn col-xs-3" data-toggle="modal" data-target="#searchModal">Search</button>
+				<a class="navbar-brand col-xs-6 text-center">PETTR</a>
+				<button type="button" class="btn btn-default navbar-btn col-xs-3" data-toggle="modal" data-target="#summaryModal">Summary</button>
+			</div>
+		</div>
+	</nav>
+	
+	<div id="content" class="container">
+		<div id="result"></div>
+	</div>
+	
+	<nav class="navbar navbar-default navbar-fixed-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-4 text-center"><input class="col-xs-12 btn btn-primary navbar-btn" type="button" id="n" onclick="petNext()" value="Next"></div>
+				<div class="col-xs-4 text-center"><button class="col-xs-12 btn btn-secondary navbar-btn" type="button" data-toggle="collapse" data-target="#petDescription">Description</button></div>
+				<div class="col-xs-4 text-center"><input class="col-xs-12 btn btn-primary navbar-btn" type="button" id="y" onclick="petSave()" value="Save"></div>
+			</div>
+		</div>
+	</nav>
+	
+	<div class="modal fade" id="searchModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">PETTR Pet Search</h4>
+				</div>
+				<div class="modal-body" id="summaryBody">
+					<div id="search">
+						<div class="row" id="title"></div>
+						<div class="row" id="zipRow">
+							<div class="col-xs-6 text-right"><label>Zip Code:</label></div>
+							<input type="text" class="col-xs-3" id="zip">
+						</div>
+						<div class="row">
+							<div class="col-xs-6 text-right"><label>Pet Type:</label></div>
+							<select class="col-xs-3" id="animalType">
+								<option value="any">Any</option>
+								<option value="dog">Dog</option>
+								<option value="cat">Cat</option>
+								<option value="smallfurry">Small and Furry</option>
+								<option value="barnyard">Barnyard</option>
+								<option value="bird">Bird</option>
+								<option value="horse">Horse</option>
+								<option value="pig">Pig</option>
+								<option value="rabbit">Rabbit</option>
+								<option value="reptile">Reptile</option>
+							</select>
+						</div>
+						<div class="row">
+							<div class="col-xs-6 text-right"><label>Pet Gender:</label></div>
+							<select class="col-xs-3" id="petGender">
+								<option value="any">Any</option>
+								<option value="F">Female</option>
+								<option value="M">Male</option>>
+							</select>
+						</div>
+						<div class="row">
+							<div class="col-xs-6 text-right"><label>Pet Age:</label></div>
+							<select class="col-xs-3" id="petAge">
+								<option value="any">Any</option>
+								<option value="Baby">Baby</option>
+								<option value="Young">Young</option>
+								<option value="Adult">Adult</option>
+								<option value="Senior">Senior</option>
+							</select>
+						</div>
+						<div class="row">
+							<div class="col-xs-6 text-right"><label>Pet Size:</label></div>
+							<select class="col-xs-3" id="petSize">
+								<option value="any">Any</option>
+								<option value="S">Small</option>
+								<option value="M">Medium</option>
+								<option value="L">Large</option>
+								<option value="XL">Extra Large</option>
+							</select>
+						</div>
+						<div class="row text-center">
+							<h6>Powered by Petfinder API</h6>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" onclick="petSearch()" data-dismiss="modal">Search for Pets!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade" id="summaryModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Summary</h4>
+				</div>
+				<div class="modal-body" id="summaryBody">
+					<table class="table-striped col-xs-12">
+						<thead>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Breed</th>
+							<th>Age</th>
+							<th>Gender</th>
+							<th>Size</th>
+						</thead>
+						<tbody id="summaryTable"></tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	
+	<script id="petTemplate" type="text/x-handlebars-template">
+		{{{this.photoString}}}
+		<div class="row">
+			<div class="col-xs-12 text-center"><h1>{{this.name}}		<small>{{this.breed}}</small></h1></div>
+		</div>
+		<div class="row petData">
+			<div class="collapse col-xs-12" id="petDescription" style="border: thin black solid">
+				<div class="row">
+					<div class="col-xs-6 text-right">Size:</div>
+					<div class="col-xs-6 text-left">{{sizeString}}</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 text-right">Gender:</div>
+					<div class="col-xs-6 text-left">{{genderString}}</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-6 text-right">Age:</div>
+					<div class="col-xs-6 text-left">{{age}}</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	
+	<script id="summaryTemplate" type="text/x-handlebars-template">
+		{{#each this}}
+			<td>{{this.name}}</td>
+			<td>{{this.type}}</td>
+			<td>{{this.breed}}</td>
+			<td>{{this.age}}</td>
+			<td>{{this.genderString}}</td>
+			<td>{{this.sizeString}}</td>
+		{{/each}}
+	</script>
+	
+</body>
+</html>
